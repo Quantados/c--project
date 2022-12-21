@@ -1,21 +1,24 @@
 ﻿// ReSharper disable InconsistentNaming
 
-namespace Quizzer
+namespace c__project
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            Run();
+            startProgram newQuiz = new startProgram();
+            newQuiz.Run();
         }
+    }
 
-        public static void Run()
+    class startProgram
+    {
+        public void Run()
         {
-            string creatingOrTaking = String.Empty;
+            QuizCreation c = new QuizCreation();
 
-            Console.WriteLine(
-                "Would you like to create a quiz or take a quiz? Answer with \"taking\" or \"creating\".");
-            creatingOrTaking = Console.ReadLine();
+            Console.WriteLine("Would you like to create a quiz or take a quiz? Answer with \"taking\" or \"creating\".");
+            var creatingOrTaking = c.TryReadLine();
 
             if (creatingOrTaking == "creating")
             {
@@ -30,20 +33,21 @@ namespace Quizzer
             }
         }
     }
-
     class TakeQuiz
     {
         string fileName = string.Empty;
 
         public void StartQuiz()
         {
+            QuizCreation q = new QuizCreation();
+
             Console.WriteLine("Make sure that all 3 .qzz files for the quiz are in the program's directory.");
             Console.WriteLine(
-                "What is the name of the file? Do NOT inlude \"Questions\", \"QuestionsAnswersA\", or \"QuestionsAnswersB\". Do not include a file extention.");
-            fileName = Console.ReadLine();
-            string?[] questionDescriptionArray = File.ReadAllLines($"{fileName}Questions.qzz");
-            string?[] questionAnswerArray = File.ReadAllLines($"{fileName}QuestionsAnswersA.qzz");
-            string?[] questionCorrectAnswerArray = File.ReadAllLines($"{fileName}QuestionsAnswersB.qzz");
+                "What is the name of the file? Do NOT include \"Questions\", \"QuestionsAnswersA\", or \"QuestionsAnswersB\". Do not include a file extension.");
+            fileName = q.TryReadLine();
+            string[] questionDescriptionArray = File.ReadAllLines($"{fileName}Questions.qzz");
+            string[] questionAnswerArray = File.ReadAllLines($"{fileName}QuestionsAnswersA.qzz");
+            string[] questionCorrectAnswerArray = File.ReadAllLines($"{fileName}QuestionsAnswersB.qzz");
             int correctQuestionsAmount = 0;
             int questionAmount = 0;
             int i = 0;
@@ -56,7 +60,7 @@ namespace Quizzer
 
             i = 0;
 
-            string?[] questionAnsweredArray = new string[questionAmount];
+            string[] questionAnsweredArray = new string[questionAmount];
 
             while (i < questionAmount)
             {
@@ -64,7 +68,7 @@ namespace Quizzer
                 Console.WriteLine($"Question {i + 1}:");
                 Console.WriteLine(questionDescriptionArray[i]);
                 Console.WriteLine(questionAnswerArray[i]);
-                questionAnsweredArray[i] = Console.ReadLine();
+                questionAnsweredArray[i] = q.TryReadLine();
                 i++;
             }
 
@@ -108,10 +112,9 @@ namespace Quizzer
 
     class QuizCreation
     {
-        string? questionInput = string.Empty;
+        string questionInput = string.Empty;
         int questionAmount = 0;
-        string? userYnAnswer = string.Empty;
-        List<int> questionList = new List<int>();
+        string userYnAnswer = string.Empty;
 
 
         public void CreateQuiz()
@@ -119,11 +122,11 @@ namespace Quizzer
             UserInputBeginning:
             Console.WriteLine("Please enter the amount of questions in the quiz.");
             UserInputNull:
-            questionInput = Console.ReadLine();
+            questionInput = TryReadLine();
             switch (questionInput)
             {
                 case null:
-                    Console.WriteLine("Please enter a vaild amount!");
+                    Console.WriteLine("Please enter a valid amount!");
                     goto UserInputNull;
                 default:
                     questionAmount = int.Parse(questionInput);
@@ -131,30 +134,22 @@ namespace Quizzer
             }
 
             Console.WriteLine($"You want {questionInput} questions. Are you sure? Y/N");
-            userYnAnswer = Console.ReadLine();
+            userYnAnswer = TryReadLine();
 
-            int j = 1;
             int i = 0;
-            string?[] questionDescriptionArray = new string[questionAmount];
+            string[] questionDescriptionArray = new string[questionAmount];
 
             if (userYnAnswer.ToUpper() == "Y" || userYnAnswer.ToUpper() == "YES")
             {
-                while (j < questionAmount)
-                {
-                    questionList.Add(j);
-
-                    j++;
-                }
-
                 while (i < questionAmount)
                 {
                     Console.WriteLine($"Please enter the question for question number {i + 1}.");
 
-                    questionDescriptionArray[i] = Console.ReadLine();
+                    questionDescriptionArray[i] = TryReadLine();
 
-                    if (questionDescriptionArray[i] == null || questionDescriptionArray[i] == "")
+                    if (questionDescriptionArray[i] == "")
                     {
-                        Console.WriteLine("questionDescriptionArray array is null.");
+                        Console.WriteLine("questionDescriptionArray array is empty.");
                         return;
                     }
 
@@ -167,7 +162,7 @@ namespace Quizzer
                 goto UserInputBeginning;
             }
 
-            string?[] questionAnswerArray = new string[questionAmount];
+            string[] questionAnswerArray = new string[questionAmount];
 
             i = 0;
 
@@ -176,11 +171,11 @@ namespace Quizzer
                 Console.WriteLine(
                     $"Please enter the answer options, for question number {i + 1}. Use a format such as \"A) Answer A\" or \"1. Answer 1.\"");
 
-                questionAnswerArray[i] = Console.ReadLine();
+                questionAnswerArray[i] = TryReadLine();
 
-                if (questionAnswerArray[i] == null || questionAnswerArray[i] == "")
+                if (questionAnswerArray[i] == "")
                 {
-                    Console.WriteLine("questionAnswerArray array is null.");
+                    Console.WriteLine("questionAnswerArray array is empty.");
                     return;
                 }
 
@@ -189,18 +184,18 @@ namespace Quizzer
 
             i = 0;
 
-            string?[] questionCorrectAnswerArray = new string[questionAmount];
+            string[] questionCorrectAnswerArray = new string[questionAmount];
 
             while (i < questionAmount)
             {
                 Console.WriteLine(
                     $"Now, enter which answer is correct for question number {i + 1}. Enter it ONLY with the correct letter or number.");
 
-                questionCorrectAnswerArray[i] = Console.ReadLine();
+                questionCorrectAnswerArray[i] = TryReadLine();
 
-                if (questionCorrectAnswerArray[i] == null || questionCorrectAnswerArray[i] == "")
+                if (questionCorrectAnswerArray[i] == "")
                 {
-                    Console.WriteLine("questionAnswerArray array is null.");
+                    Console.WriteLine("questionAnswerArray array is empty.");
                     return;
                 }
 
@@ -209,15 +204,13 @@ namespace Quizzer
 
             fileNaming:
             Console.WriteLine(
-                "You need to save the quiz to a file. What would you like the file to be named? Format it WITHOUT a file extention.");
+                "You need to save the quiz to a file. What would you like the file to be named? Format it WITHOUT a file extension.");
 
-            string fileName = string.Empty;
-
-            fileName = Console.ReadLine();
+            var fileName = TryReadLine();
             userYnAnswer = string.Empty;
 
             Console.WriteLine($"You want to name the file {fileName}.qzz. Is this correct? Y/N");
-            userYnAnswer = Console.ReadLine();
+            userYnAnswer = TryReadLine();
 
             if (userYnAnswer.ToUpper() == "Y" || userYnAnswer.ToUpper() == "YES")
             {
@@ -227,7 +220,7 @@ namespace Quizzer
                     userYnAnswer = String.Empty;
 
                     Console.WriteLine("These files already exists! Do you want to overwrite the file? Y/N");
-                    userYnAnswer = Console.ReadLine();
+                    userYnAnswer = TryReadLine();
 
                     if (userYnAnswer.ToUpper() == "Y" || userYnAnswer.ToUpper() == "YES")
                     {
@@ -257,18 +250,25 @@ namespace Quizzer
                 }
             }
 
-            Console.WriteLine("You've finished making your quiz! Would you like to return to the main page?");
+            Console.WriteLine("You've finished making your quiz! Would you like to return to the main page? Y/N");
             userYnAnswer = String.Empty;
-            userYnAnswer = Console.ReadLine();
+            userYnAnswer = TryReadLine();
             if (userYnAnswer.ToUpper() == "Y" || userYnAnswer.ToUpper() == "YES")
             {
-                Program p = new Program();
-                //p.Run();
+                startProgram newQuiz = new startProgram();
+                newQuiz.Run();
             }
             else
             {
                 Environment.Exit(0);
             }
+        }
+
+        public string TryReadLine()
+        {
+            string? line = Console.ReadLine();
+            if (line != null) {return line;}
+            else {line = "-1"; return line;}
         }
     }
 }
