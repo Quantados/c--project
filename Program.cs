@@ -69,7 +69,7 @@ namespace Quizzer
             }
 
             i = 0;
-
+            Console.Clear();
             Console.WriteLine("You have finished the quiz! Here are your results!");
 
             while (i < questionAmount)
@@ -100,7 +100,8 @@ namespace Quizzer
             }
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine($"You got {correctQuestionsAmount} out of {questionAmount} questions correct.");
-
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
     }
 
