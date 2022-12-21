@@ -2,7 +2,7 @@
 
 namespace c__project
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -42,9 +42,20 @@ namespace c__project
             QuizCreation q = new QuizCreation();
 
             Console.WriteLine("Make sure that all 3 .qzz files for the quiz are in the program's directory.");
+            BeforeFileFinding:
             Console.WriteLine(
                 "What is the name of the file? Do NOT include \"Questions\", \"QuestionsAnswersA\", or \"QuestionsAnswersB\". Do not include a file extension.");
             fileName = q.TryReadLine();
+            if ((!File.Exists($"{fileName}Questions.qzz") || !File.Exists($"{fileName}QuestionsAnswersA.qzz") || 
+                 !File.Exists($"{fileName}QuestionsAnswersB.qzz")))
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Files was not found. Are you sure they are in the program directory?");
+                Console.ForegroundColor = ConsoleColor.White;
+                goto BeforeFileFinding;
+            }
+            
             string[] questionDescriptionArray = File.ReadAllLines($"{fileName}Questions.qzz");
             string[] questionAnswerArray = File.ReadAllLines($"{fileName}QuestionsAnswersA.qzz");
             string[] questionCorrectAnswerArray = File.ReadAllLines($"{fileName}QuestionsAnswersB.qzz");
@@ -52,7 +63,7 @@ namespace c__project
             int questionAmount = 0;
             int i = 0;
 
-            foreach (string questionDescription in questionDescriptionArray)
+            foreach (string unused in questionDescriptionArray)
             {
                 i++;
                 questionAmount = i;
@@ -113,7 +124,7 @@ namespace c__project
     class QuizCreation
     {
         string questionInput = string.Empty;
-        int questionAmount = 0;
+        int questionAmount;
         string userYnAnswer = string.Empty;
 
 
